@@ -3,11 +3,14 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Introvert\ApiClient;
 
 return static function (ContainerConfigurator $di): void {
-    Introvert\Configuration::getDefaultConfiguration()->setApiKey('key', '%env(INTROVERT_YADRO_API_KEY)%');
+
     $di->services()
-        ->set('introvert.api_client', \Introvert\ApiClient::class)
-        ->public();
+        ->set('introvert.api_client', ApiClient::class)
+        ->public()
+        ->autoconfigure()
+        ->autowire();
     $di->import('../src/**/di.php');
 };
