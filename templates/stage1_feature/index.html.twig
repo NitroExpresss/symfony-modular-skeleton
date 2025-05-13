@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+{% block title %}Date Range Selector
+{% endblock %}
+{% block body %}
+	<h1 class="mb-4">Select Date Range</h1>
+	{{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+	<div class="col-md-6">
+		{{ form_label(form.from, 'From Date', {'label_attr': {'class': 'form-label'}}) }}
+		{{ form_widget(form.from, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="col-md-6">
+		{{ form_label(form.to, 'To Date', {'label_attr': {'class': 'form-label'}}) }}
+		{{ form_widget(form.to, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="col-12">
+		{{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+	</div>
+	{{ form_end(form) }}
+	{% if stats is not null %}
+		<div class="card mb-4 mt-4">
+			<div class="card-header">
+				<h2>Date Range</h2>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<p>
+							<strong>From:</strong>
+							{{ stats.from|date('Y-m-d H:i:s') }}</p>
+					</div>
+					<div class="col-md-6">
+						<p>
+							<strong>To:</strong>
+							{{ stats.to|date('Y-m-d H:i:s') }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card mb-4">
+			<div class="card-header">
+				<h2>Summary</h2>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<p>
+							<strong>Total Deals Count:</strong>
+							{{ stats.data.total_deals }}</p>
+					</div>
+					<div class="col-md-6">
+						<p>
+							<strong>Total Amount:</strong>
+							{{ stats.data.total_sum|number_format(2, '.', ' ') }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% if stats.data.clients is defined and stats.data.clients is not empty %}
+			<div class="card mb-4">
+				<div class="card-header">
+					<h2>Client Transactions</h2>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead class="thead-dark">
+								<tr>
+									<th>Client ID</th>
+									<th>Client Name</th>
+									<th>Status</th>
+									<th class="text-end">Total Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for client in stats.data.clients %}
+									<tr>
+										<td>{{ client.id }}</td>
+										<td>{{ client.name }}</td>
+										<td>
+											<span class="badge {{ client.valid ? 'bg-success' : 'bg-danger' }}">
+												{{ client.valid ? 'Valid' : 'Invalid' }}
+											</span>
+										</td>
+										<td class="text-end">{{ client.total|number_format(2, '.', ' ') }}</td>
+										<td>
+											<button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#deals{{ client.id }}" aria-expanded="false">
+												Show Deals
+											</button>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5" class="p-0">
+											<div class="collapse" id="deals{{ client.id }}">
+												<div class="card card-body m-2">
+													{% if client.deals is not empty %}
+														<table class="table table-sm">
+															<thead>
+																<tr>
+																	<th>Deal Name</th>
+																	<th>Last Modified</th>
+																	<th class="text-end">Price</th>
+																</tr>
+															</thead>
+															<tbody>
+																{% for deal in client.deals %}
+																	<tr>
+																		<td>{{ deal.name }}</td>
+																		<td>{{ deal.last_modified|date('Y-m-d H:i:s') }}</td>
+																		<td class="text-end">{{ deal.price|number_format(2, '.', ' ') }}</td>
+																	</tr>
+																{% endfor %}
+															</tbody>
+														</table>
+													{% else %}
+														<p class="text-muted mb-0">No deals available for this client.</p>
+													{% endif %}
+												</div>
+											</div>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div class="alert alert-info">
+				No client data available for the selected period.
+			</div>
+		{% endif %}
+	{% endif %}
+{% endblock %}
