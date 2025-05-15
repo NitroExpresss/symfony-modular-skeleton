@@ -93,7 +93,7 @@ class Controller extends AbstractController
     {
         $clients = $this->getClients();
 
-        $deals = $this->getAllDeals();
+        $deals = $this->getDeals([142]);
         //filter deals with 0 price
         $deals = array_filter($deals, fn($deal) => ($deal['price'] ?? 0) != 0);
 
@@ -101,7 +101,7 @@ class Controller extends AbstractController
             $deals = array_filter($deals, function ($deal) use ($fromTimestamp, $toTimestamp) {
                 return isset($deal['last_modified']) &&
                     $deal['last_modified'] >= $fromTimestamp &&
-                    $deal['last_modified'] <= $toTimestamp; 
+                    $deal['last_modified'] <= $toTimestamp;
             });
         }
 
@@ -139,12 +139,8 @@ class Controller extends AbstractController
         // dd($stats);
         return $stats;
     }
-    private function getAllDeals(int $fromTimestamp = null, int $toTimestamp = null, int $status = 142): array
+    private function getDeals(array $status = [], int $fromTimestamp = 0, int $toTimestamp = 0): array
     {
-        try {
-            return $this->apiClient->lead->getAll(null, [$status], null, null)['result'] ?? [];
-        } catch (\Exception $e) {
-            return [];
-        }
+        return $this->apiClient->lead->getAll(null, $status, null, null,)['result'] ?? [];
     }
 }
