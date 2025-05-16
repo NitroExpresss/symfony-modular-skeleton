@@ -6,5 +6,5 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return static function (RoutingConfigurator $routing): void {
     $routing->add('index', '/')
-        ->controller('App\\MyNewFeature\\Controller::index');
+        ->controller('App\\MyNewFeature\\Controller::showTime');
 };
