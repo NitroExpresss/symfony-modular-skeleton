@@ -1,20 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>
-			{% block title %}introvert
-			{% endblock %}
-		</title>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> {% block styles %}{% endblock %}
-		</head>
-		<body>
-			<div class="container mt-4"> {% block body %}{% endblock %}
-				</div>
-				 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-				 <script src="/js/glDatePicker.js"></script>
-				 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>{% block javascripts %}
-			{% endblock %}
-		</body>
-	</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        introvert
+      {% endblock %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" /> {% block styles %}
+
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container mt-4">
+      {% block body %}
+
+      {% endblock %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/js/glDatePicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block javascripts %}
+
+    {% endblock %}
+    <script type="text/javascript">
+      ;(function (d, w, k) {
+        w.introvert_callback = function () {
+          try {
+            w.II = new IntrovertIntegration(k)
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      
+        var n = d.getElementsByTagName('script')[0],
+          e = d.createElement('script')
+      
+        e.type = 'text/javascript'
+        e.async = true
+        e.src = 'https://api.yadrocrm.ru/js/cache/' + k + '.js'
+        n.parentNode.insertBefore(e, n)
+      })(document, window, '3363f0c5')
+    </script>
+  </body>
+</html>

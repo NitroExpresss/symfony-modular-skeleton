@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Stage 5 - Two Forms
+{% endblock %}
+
+{% block body %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h2>Form 1</h2>
+          </div>
+          <div class="card-body">{{ form_start(form1, { attr: { id: 'form1' } }) }}
+            {{ form_row(form1.NAME_MY_AN, { label: 'Name' }) }}
+            {{ form_row(form1.PHONE_MY_AN, { label: 'Phone' }) }}
+            {{ form_row(form1.EMAIL_MY_AN, { label: 'Email' }) }}
+            {{ form_row(form1.COMMENT_MY_AN, { label: 'Commentary' }) }}
+            {{ form_row(form1.submit) }}
+            {{ form_end(form1) }}</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h2>Form 2</h2>
+          </div>
+          <div class="card-body">{{ form_start(form2, { attr: { id: 'form2' } }) }}
+            {{ form_row(form2.NAME_MY_AN, { label: 'Name' }) }}
+            {{ form_row(form2.PHONE_MY_AN, { label: 'Phone' }) }}
+            {{ form_row(form2.EMAIL_MY_AN, { label: 'Email' }) }}
+            {{ form_row(form2.COMMENT_MY_AN, { label: 'Commentary' }) }}
+            {{ form_row(form2.submit) }}
+            {{ form_end(form2) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script></script>
+{% endblock %}
