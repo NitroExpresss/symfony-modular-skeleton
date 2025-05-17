@@ -1,5 +1,5 @@
 // <?php header('Content-Type: application/javascript'); ?>
-stage3ColorWidget = function () {
+stage4Widget = function () {
     const widget = this;
     this.code = null;
 
@@ -37,6 +37,6 @@ stage3ColorWidget = function () {
     };
 };
 
-yadroWidget.widgets['stage4-add_search'] = new stage3ColorWidget();
+yadroWidget.widgets['stage4-add_search'] = new stage4Widget();
 yadroWidget.widgets['stage4-add_search'].bootstrap('stage4-add_search');
 test_yadro_start('stage4-add_search');
