@@ -11,9 +11,10 @@ stage3ColorWidget = function () {
 
             $('<div>', {
                 class: 'tips-item js-tips-item js-cf-actions-item',
-                html: '<span class="tips-icon icon icon-inline icon-search-dark"></span> Нагуглить',
+                html: '<span class="tips-icon icon icon-inline icon-search"></span>🔍 Нагуглить',
                 click: function () {
                     if (value) {
+                        window.open('http://letmegooglethat.com/?q=' + encodeURIComponent(value));
                         window.open('http://letmegooglethat.com/?q=' + encodeURIComponent(value));
                     }
                 }
