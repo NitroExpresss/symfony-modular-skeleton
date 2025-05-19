@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}Welcome{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">Welcome to the Application</h1>
+        <div class="list-group">
+            <a href="{{ path('stage1_index') }}" class="list-group-item list-group-item-action">
+                Go to Stage 1
+            </a>
+            <a href="{{ path('stage2') }}" class="list-group-item list-group-item-action">
+                Go to Stage 2
+            </a>
+            <a href="{{ path('stage5') }}" class="list-group-item list-group-item-action">
+                Go to Stage 5
+            </a>
+        </div>
+    </div>
+{% endblock %}

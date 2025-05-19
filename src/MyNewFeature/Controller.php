@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\MyNewFeature;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-class Controller
+class Controller extends AbstractController
 {
     public function showTime(): Response
     {
-        return new Response('<h1>Current Time: ' . date('Y-m-d H:i:s') . '</h1>');
+        return $this->render('index.html.twig');
     }
 }
