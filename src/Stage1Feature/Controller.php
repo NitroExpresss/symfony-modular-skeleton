@@ -96,17 +96,16 @@ class Controller extends AbstractController
         $deals = $this->getDeals([142]);
         //filter deals with 0 price
         $deals = array_filter($deals, fn($deal) => ($deal['price'] ?? 0) != 0);
-
         if ($fromTimestamp && $toTimestamp) {
             $deals = array_filter($deals, function ($deal) use ($fromTimestamp, $toTimestamp) {
-                return isset($deal['last_modified']) &&
-                    $deal['last_modified'] >= $fromTimestamp &&
-                    $deal['last_modified'] <= $toTimestamp;
+                return isset($deal['date_close']) &&
+                    $deal['date_close'] >= $fromTimestamp &&
+                    $deal['date_close'] <= $toTimestamp;
             });
         }
 
         usort($deals, function ($a, $b) {
-            return $b['last_modified'] - $a['last_modified'];
+            return $b['date_close'] - $a['date_close'];
         });
 
         $totalSum = array_reduce($deals, function ($carry, $deal) {
@@ -139,8 +138,8 @@ class Controller extends AbstractController
         // dd($stats);
         return $stats;
     }
-    private function getDeals(array $status = [], int $fromTimestamp = 0, int $toTimestamp = 0): array
+    private function getDeals(array $status = []): array
     {
-        return $this->apiClient->lead->getAll(null, $status, null, null,)['result'] ?? [];
+        return $this->apiClient->lead->getAll(null, $status)['result'] ?? [];
     }
 }
