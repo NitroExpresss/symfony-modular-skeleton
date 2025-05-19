@@ -26,75 +26,91 @@ class Controller extends AbstractController
 
     public function index(Request $request): Response
     {
-        return $this->render('stage2_feature/index.html.twig', [
-        ]);
+        return $this->render('stage2_feature/index.html.twig');
     }
     public function refreshDays(): JsonResponse
     {
-
-        $dateFieldId = 968675;
-        $threeStatuses = [9585813, 142, 143];
-
-        // deals in one of the 3 statuses
-        $deals = $this->getDeals($threeStatuses);
-
-        //deals with price !=0
-        // $deals = array_filter($deals, fn($deal) => $deal['price'] != 0);
-
-        //custom date field id 
-        $dateFieldId = 968675;
-
-        //deals with the field !=0
-        $deals = array_filter(
-            $deals,
-            fn($deal) => !empty($deal['custom_fields']) &&
-                in_array(
-                    $dateFieldId,
-                    array_column($deal['custom_fields'], 'id'),
-                    true
-                )
-        );
-        // deals within the date range 
+        //reserve date range
         $today = new DateTime();
         $endDate = (clone $today)->modify('+31 days');
+        // date_reservation
+        //custom date field id
+        $dateFieldId = 968675;
+        // statuses
+        $statuses = [42883918, 42883915, 42883912];
+        // PIPELINE = Carrot;
+        // "42883912": {
+        // "name": "Первичный контакт",
+        // "pipeline_id": 4679716,
+        // "id": 42883912
+        // },
+        // "42883915": {
+        //     "name": "Переговоры",
+        //     "pipeline_id": 4679716,
+        //     "id": 42883915
+        // },
+        // "42883918": {
+        //     "name": "Принимают решение",
+        //     "pipeline_id": 4679716,
+        //     "id": 42883918
+        // }
+
+        // deals in one of the 3 statuses
+        $deals = $this->getDeals($statuses);
+
+        //filter price !=0
+        // $deals = array_filter($deals, fn($deal) => $deal['price'] != 0);
+
+        // filter deals with empty custom field and out of range date
         $deals = array_filter($deals, function ($deal) use ($today, $endDate, $dateFieldId) {
+            if (empty($deal['custom_fields'])) {
+                return false;
+            }
+
             foreach ($deal['custom_fields'] as $field) {
-                if ($field['id'] === $dateFieldId) {
+                if ($field['id'] === $dateFieldId && !empty($field['values'][0]['value'])) {
                     $dealDate = new DateTime($field['values'][0]['value']);
                     return $dealDate >= $today && $dealDate <= $endDate;
                 }
             }
+
             return false;
         });
         //preparing available dates
         $result = [];
         $current = clone $today;
-        //fill keys 
         while ($current <= $endDate) {
-            $result[$current->format('Y-m-d')] = 0;
+            $result[] = $current->format('Y-m-d');
             $current->modify('+1 day');
         }
-
+        $dateCounts = [];
         foreach ($deals as $deal) {
             foreach ($deal['custom_fields'] as $field) {
                 if ($field['id'] === $dateFieldId) {
                     $dealDate = new DateTime($field['values'][0]['value']);
                     $dayKey = $dealDate->format('Y-m-d');
-                    if (isset($result[$dayKey])) {
-                        $result[$dayKey]++;
+                    if (!isset($dateCounts[$dayKey])) {
+                        $dateCounts[$dayKey] = 0;
                     }
+                    $dateCounts[$dayKey]++;
                     break;
                 }
             }
         }
-        $result = array_filter($result, fn($count) => $count >= 5);
-        //set values
-        $result = array_fill_keys(array_keys($result), false);
+
+        // Filter the result to only include dates that have 5 or more deals
+        $result = array_filter($result, function ($date) use ($dateCounts) {
+            return isset($dateCounts[$date]) && $dateCounts[$date] >= 5;
+        });
+
+        // Re-index the array (optional)
+        $result = array_values($result);
+        
         return new JsonResponse($result);
     }
 
-    private function getDeals(array $status = [], int $fromTimestamp = 0, int $toTimestamp = 0): array
+    private function getDeals(array $statuses = []): array
     {
-        return $this->apiClient->lead->getAll(null, $status, null, null,)['result'] ?? [];
+        return $this->apiClient->lead->getAll(null, $statuses)['result'] ?? [];
     }
 }

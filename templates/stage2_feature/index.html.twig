@@ -84,50 +84,38 @@
 
 {% block body %}
   <h1 class="title mb-4">Calendar View</h1>
-  <div class="refresh-controls">
-    <button id="refreshBtn" class="btn btn-primary">Refresh</button>
-  </div>
   <input type="text" id="mydate" />
 {% endblock %}
 
 {% block javascripts %}
   <script>
     $(document).ready(function () {
-      // Generate selectable dates for next 31 days
-    
-      // Refresh button handler
-      const $refreshBtn = $('#refreshBtn')
-    
-      function refreshCalendar() {
-        $.get('/stage2/refresh', function (data) {
-          console.log('Calendar refreshed at:', new Date().toLocaleString(), data)
-          const selectableDates = []
-          const today = new Date()
-          for (let i = 0; i < 31; i++) {
-            const date = new Date(today)
-            console.log(date,'date');
-            date.setDate(today.getDate() + i)
-            console.log(date,'date+i');
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-            console.log(dateKey,'datekey');
-            if (!data.hasOwnProperty(dateKey)) {
-              selectableDates.push({
-                date: new Date(date.getFullYear(), date.getMonth(), date.getDate())
-              })
-            }
+      $.get('/stage2/refresh', function (data) {
+        console.log('Calendar refreshed at:', new Date().toLocaleString(), data)
+        const selectableDates = []
+        const today = new Date()
+        for (let i = 0; i < 31; i++) {
+          const date = new Date(today)
+          console.log(date, 'date')
+          date.setDate(today.getDate() + i)
+          console.log(date, 'date+i')
+          const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+          console.log(dateKey, 'datekey', data.includes(dateKey))
+          if (!data.includes(dateKey)) {
+            selectableDates.push({
+              date: new Date(date.getFullYear(), date.getMonth(), date.getDate())
+            })
           }
-          console.log(selectableDates); 
-          // Initialize date picker
-          $('#mydate').glDatePicker({
-            showAlways: true,
-            allowMonthSelect: false,
-            allowYearSelect: false,
-            selectableDates: selectableDates
-          })
+        }
+        console.log(selectableDates)
+        // Initialize date picker
+        $('#mydate').glDatePicker({
+          showAlways: true,
+          allowMonthSelect: false,
+          allowYearSelect: false,
+          selectableDates: selectableDates
         })
-      }
-    
-      $refreshBtn.on('click', refreshCalendar)
+      })
     })
   </script>
 {% endblock %}
