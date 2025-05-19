@@ -80,11 +80,11 @@ class Controller extends AbstractController
         $form2->handleRequest($request);
         if ($form1->isSubmitted() && $form1->isValid()) {
             $formData = $form1->getData();
-            return $this->callYadro($formData);
+            $this->callYadro($formData);
         }
         if ($form2->isSubmitted() && $form2->isValid()) {
             $formData = $form1->getData();
-            return $this->callYadro($formData);
+            $this->callYadro($formData);
         }
         return $this->render('stage5_feature/index.html.twig', [
             'form1' => $form1->createView(),
